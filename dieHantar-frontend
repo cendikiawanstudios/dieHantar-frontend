@@ -1,0 +1,141 @@
+/* Reset Dasar */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f4f7f6;
+  color: #333;
+}
+
+/* --- HEADER --- */
+.header {
+  background: linear-gradient(135deg, #00b894, #00cec9); /* Hijau Tosca Modern */
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* --- CONTAINER UTAMA --- */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.main-content h2 {
+  margin-bottom: 25px;
+  border-left: 5px solid #00b894;
+  padding-left: 15px;
+  color: #2d3436;
+}
+
+/* --- GRID SYSTEM (Responsive) --- */
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  padding-bottom: 50px;
+}
+
+/* --- KARTU RESTORAN --- */
+.card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.card-image img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-body h3 {
+  font-size: 1.25rem;
+  color: #2d3436;
+}
+
+.address {
+  font-size: 0.9rem;
+  color: #636e72;
+  display: flex;
+  align-items: center;
+}
+
+.desc {
+  font-size: 0.95rem;
+  color: #b2bec3;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Batasi text jadi 2 baris */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- TOMBOL --- */
+.btn-order {
+  width: 100%;
+  padding: 12px;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: auto; /* Dorong tombol ke bawah */
+}
+
+.btn-order:hover {
+  background-color: #019576;
+}
+
+/* --- STATUS KOSONG / LOADING --- */
+.loading-text, .empty-state {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 1.2rem;
+  color: #636e72;
+  font-weight: 500;
+}
