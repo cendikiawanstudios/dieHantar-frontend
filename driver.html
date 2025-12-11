@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; background: #121212; color: white; font-family: sans-serif; padding-bottom: 80px; }
+        .header { background: #1f1f1f; padding: 20px; position: sticky; top: 0; border-bottom: 1px solid #333; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #00d165; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        
+        .container { padding: 15px; }
+        .order-card { background: #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 15px; border-left: 6px solid #00d165; animation: slideIn 0.3s; }
+        .price-tag { float: right; font-size: 20px; font-weight: bold; color: #00d165; }
+        .service-type { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-take { background: #00d165; color: black; font-weight: bold; width: 100%; border: none; padding: 15px; border-radius: 30px; margin-top: 15px; font-size: 16px; cursor: pointer; }
+        .btn-take:active { transform: scale(0.98); }
+        
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: #1f1f1f; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #333; }
+        .nav-item { color: #888; text-decoration: none; font-size: 14px; text-align: center; width: 100%; }
+        .nav-item.active { color: #00d165; font-weight: bold; }
+
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <div style="font-weight:bold; font-size:18px">Mitra Driver</div>
+        <div style="font-size:12px; color:#aaa" id="status-text">🔴 Offline</div>
+    </div>
+    <label class="switch">
+        <input type="checkbox" id="toggle-online" onchange="toggleStatus()">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="container" id="order-container">
+    <p style="text-align:center; color:#555; margin-top:50px;">
+        Geser tombol di atas untuk Aktif<br>dan menerima orderan.
+    </p>
+</div>
+
+<div class="nav-bottom">
+    <a href="#" class="nav-item active">Beranda</a>
+    <a href="#" class="nav-item">Pendapatan</a>
+    <a href="index.html" class="nav-item">Keluar</a>
+</div>
+
+<script>
+    let isOnline = false;
+    const DRIVER_NAME = "Udin Termux";
+
+    function toggleStatus() {
+        isOnline = document.getElementById('toggle-online').checked;
+        const statusText = document.getElementById('status-text');
+        const container = document.getElementById('order-container');
+        
+        if(isOnline) {
+            statusText.innerText = "🟢 Sedang Online";
+            statusText.style.color = "#00d165";
+            container.innerHTML = '<p style="text-align:center; color:#888;">Mencari orderan di sekitar...</p>';
+            cekOrder();
+        } else {
+            statusText.innerText = "🔴 Offline";
+            statusText.style.color = "#aaa";
+            container.innerHTML = '<p style="text-align:center; color:#555; margin-top:50px;">Anda sedang Offline.</p>';
+        }
+    }
+
+    async function cekOrder() {
+        if(!isOnline) return;
+        
+        try {
+            const res = await fetch('https://rlzcl-180-242-198-206.a.free.pinggy.link/api/list-orders');
+            const data = await res.json();
+            const container = document.getElementById('order-container');
+            
+            const orderBaru = data.filter(item => item.status === 'Mencari Driver');
+            
+            if(orderBaru.length > 0) {
+                container.innerHTML = ''; // Bersihkan loading text
+                orderBaru.forEach(item => {
+                    const html = `
+                        <div class="order-card">
+                            <span class="price-tag">Rp ${item.harga}</span>
+                            <div class="service-type">${item.jenis}</div>
+                            <h2 style="margin: 5px 0">${item.lokasi || 'Lokasi tidak terdeteksi'}</h2>
+                            <p style="color:#bbb">Pelanggan: ${item.user}</p>
+                            <button class="btn-take" onclick="ambil(${item.id})">TERIMA ORDER SEKARANG</button>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            }
+        } catch(e) { console.log(e); }
+        
+        if(isOnline) setTimeout(cekOrder, 2000);
+    }
+
+    async function ambil(id) {
+        await fetch('https://rlzcl-180-242-198-206.a.free.pinggy.link/api/take-order', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id: id, driver: DRIVER_NAME })
+        });
+        alert("Selamat! Silakan jemput penumpang.");
+        cekOrder();
+    }
+</script>
+
+</body>
+</html>

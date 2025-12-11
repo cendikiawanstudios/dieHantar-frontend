@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dieHantar - Solusi Cepat</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f8f9fa; }
+        header { background: #2c3e50; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .hero { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; padding: 60px 20px; text-align: center; }
+        .hero h1 { margin: 0; font-size: 3rem; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .btn { display: inline-block; padding: 10px 20px; border-radius: 25px; text-decoration: none; color: white; font-weight: bold; margin-top: 15px; }
+        .btn-user { background: #e74c3c; }
+        .btn-driver { background: #27ae60; }
+        .btn-admin { background: #2980b9; }
+        .icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h3>🚀 dieHantar Group</h3>
+    <small>Versi Termux 1.0</small>
+</header>
+
+<div class="hero">
+    <h1>Satu Aplikasi, Semua Solusi.</h1>
+    <p>Lapar? Butuh tumpangan? Atau ingin cari cuan?</p>
+</div>
+
+<div class="container">
+    <div class="card">
+        <span class="icon">🍔🛵</span>
+        <h2>Pelanggan</h2>
+        <p>Pesan makanan atau ojek dengan cepat lewat aplikasi web.</p>
+        <a href="http://localhost:8081" target="_blank" class="btn btn-user">Buka Aplikasi User</a>
+    </div>
+
+    <div class="card">
+        <span class="icon">helm_safety</span>
+        <h2>Mitra Driver</h2>
+        <p>Gabung menjadi mitra dan terima orderan masuk secara real-time.</p>
+        <a href="driver.html" class="btn btn-driver">Login Driver</a>
+    </div>
+
+    <div class="card">
+        <span class="icon">🖥️</span>
+        <h2>Kantor Pusat</h2>
+        <p>Dashboard monitoring untuk admin memantau seluruh transaksi.</p>
+        <a href="admin.html" class="btn btn-admin">Masuk Dashboard</a>
+    </div>
+</div>
+
+<footer style="text-align:center; padding: 20px; color: #666;">
+    &copy; 2025 dieHantar Technologies (Running on Termux)
+</footer>
+
+</body>
+</html>

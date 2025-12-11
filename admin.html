@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard (GPS Live)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { font-family: sans-serif; display: flex; margin: 0; background: #f0f2f5; height: 100vh; overflow: hidden; }
+        .sidebar { width: 250px; background: #1a202c; color: white; padding: 20px; display: flex; flex-direction: column; }
+        .content { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        .map-wrapper { flex: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px; position: relative; }
+        #map { height: 100%; width: 100%; }
+        .overlay-stats { position: absolute; top: 10px; right: 10px; z-index: 1000; background: white; padding: 15px; borderRadius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>📡 dieHantar</h2>
+    <p>Monitoring GPS Real-time</p>
+    <hr style="border-color:#333; width:100%">
+    <p><a href="index.html" style="color:white; text-decoration:none">🔙 Menu Utama</a></p>
+    <div id="log-activity" style="font-size:12px; color:#aaa; margin-top:auto; height: 200px; overflow-y:auto;">
+        Log Aktivitas...
+    </div>
+</div>
+
+<div class="content">
+    <h1>Peta Sebaran Order</h1>
+    
+    <div class="map-wrapper">
+        <div id="map"></div>
+        <div class="overlay-stats">
+            <b>Total Order:</b> <span id="count">0</span><br>
+            <small style="color:green">Update tiap 3 detik</small>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // 1. Inisialisasi Peta
+    var map = L.map('map').setView([-6.200, 106.816], 5); // Default view (bisa Batam/Jakarta)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    let markers = [];
+
+    function log(msg) {
+        const div = document.getElementById('log-activity');
+        div.innerHTML = "<div>> " + msg + "</div>" + div.innerHTML;
+    }
+
+    async function updateMap() {
+        try {
+            const res = await fetch('https://rlzcl-180-242-198-206.a.free.pinggy.link/api/list-orders');
+            const data = await res.json();
+            
+            document.getElementById('count').innerText = data.length;
+
+            // Hapus marker lama
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            data.forEach(item => {
+                // Parsing Lokasi (Misal: "1.123, 104.456")
+                let lat = 0, lng = 0;
+                
+                if (item.lokasi && item.lokasi.includes(',')) {
+                    // Jika data lokasi valid (ada komanya)
+                    const parts = item.lokasi.split(',');
+                    lat = parseFloat(parts[0]);
+                    lng = parseFloat(parts[1]);
+                } else {
+                    // Jika lokasi tidak valid/lama, kasih koordinat dummy acak sekitar Batam
+                    lat = 1.12 + (Math.random() * 0.05);
+                    lng = 104.04 + (Math.random() * 0.05);
+                }
+
+                // Tentukan Icon/Warna berdasarkan status
+                let warna = item.status === 'Mencari Driver' ? 'red' : 'green';
+                
+                // Buat Marker
+                let marker = L.circleMarker([lat, lng], {
+                    color: warna,
+                    radius: 8,
+                    fillOpacity: 0.8
+                }).addTo(map).bindPopup(`
+                    <b>Order #${item.id} (${item.jenis})</b><br>
+                    User: ${item.user}<br>
+                    Status: ${item.status}<br>
+                    Harga: Rp ${item.harga}
+                `);
+                
+                markers.push(marker);
+            });
+            
+            // Log update
+            if(data.length > 0) log("Data diperbarui: " + data.length + " pesanan.");
+
+        } catch(e) { console.log(e); }
+    }
+
+    // Panggil pertama kali & set interval
+    updateMap();
+    setInterval(updateMap, 3000);
+</script>
+
+</body>
+</html>
